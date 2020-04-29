@@ -96,6 +96,7 @@
             this.CoderLoadButton.TabIndex = 3;
             this.CoderLoadButton.Text = "Load";
             this.CoderLoadButton.UseVisualStyleBackColor = true;
+            this.CoderLoadButton.Click += new System.EventHandler(this.CoderLoadButton_Click);
             // 
             // ProcessButton
             // 
@@ -105,6 +106,7 @@
             this.ProcessButton.TabIndex = 4;
             this.ProcessButton.Text = "Process";
             this.ProcessButton.UseVisualStyleBackColor = true;
+            this.ProcessButton.Click += new System.EventHandler(this.ProcessButton_Click);
             // 
             // CoderSaveButton
             // 
@@ -114,6 +116,7 @@
             this.CoderSaveButton.TabIndex = 5;
             this.CoderSaveButton.Text = "Save";
             this.CoderSaveButton.UseVisualStyleBackColor = true;
+            this.CoderSaveButton.Click += new System.EventHandler(this.CoderSaveButton_Click);
             // 
             // RangePictureBox
             // 
