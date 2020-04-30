@@ -268,6 +268,7 @@
             this.DecodeButton.TabIndex = 21;
             this.DecodeButton.Text = "Decode # steps";
             this.DecodeButton.UseVisualStyleBackColor = true;
+            this.DecodeButton.Click += new System.EventHandler(this.DecodeButton_Click);
             // 
             // DecoderLoadButton
             // 
@@ -301,12 +302,7 @@
             // 
             this.NumberOfStepsNumericUpDown.Location = new System.Drawing.Point(776, 653);
             this.NumberOfStepsNumericUpDown.Maximum = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            this.NumberOfStepsNumericUpDown.Minimum = new decimal(new int[] {
-            1,
+            7,
             0,
             0,
             0});
@@ -315,11 +311,6 @@
             this.NumberOfStepsNumericUpDown.Size = new System.Drawing.Size(103, 20);
             this.NumberOfStepsNumericUpDown.TabIndex = 26;
             this.NumberOfStepsNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.NumberOfStepsNumericUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // PSNRLabel
             // 

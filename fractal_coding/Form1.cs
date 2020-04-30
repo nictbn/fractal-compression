@@ -50,5 +50,21 @@ namespace fractal_coding
         {
             Coder.SaveCoding();
         }
+
+        private void DecodeButton_Click(object sender, EventArgs e)
+        {
+            int isometry = Convert.ToInt32(NumberOfStepsNumericUpDown.Value);
+            byte[,] result = Coder.ApplyIsometry(isometry);
+            Bitmap bmp = new Bitmap(512, 512);
+            for(int i = 0; i < 512; i++)
+            {
+                for(int j = 0; j < 512; j++)
+                {
+                    int color = result[i, j];
+                    bmp.SetPixel(j, i, Color.FromArgb(color, color, color));
+                }
+            }
+            DecodedImagePictureBox.Image = bmp;
+        }
     }
 }
