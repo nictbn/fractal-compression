@@ -23,23 +23,42 @@ namespace fractal_coding
         const int CLOCKWISE_270_ROTATION = 7;
 
         const int RANGE_MATRIX_DIMENSION = 64;
+        const int DOMAIN_MATRIX_DIMENSION = 63;
 
         private byte[] Header;
         private byte[,] Image;
         private string OriginalImagePath;
         private RangeInfo[,] Ranges;
+        private DomainInfo[,] Domains;
 
         public void Init()
         {
             Header = new byte[HEADER_SIZE];
             Image = new byte[HEIGHT, WIDTH];
             OriginalImagePath = null;
+
+            InitRanges();
+            InitDomains();
+        }
+        public void InitRanges()
+        {
             Ranges = new RangeInfo[RANGE_MATRIX_DIMENSION, RANGE_MATRIX_DIMENSION];
-            for(int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
+            for (int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
             {
-                for(int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
+                for (int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
                 {
                     Ranges[i, j] = new RangeInfo();
+                }
+            }
+        }
+        public void InitDomains()
+        {
+            Domains = new DomainInfo[DOMAIN_MATRIX_DIMENSION, DOMAIN_MATRIX_DIMENSION];
+            for (int i = 0; i < DOMAIN_MATRIX_DIMENSION; i++)
+            {
+                for (int j = 0; j < DOMAIN_MATRIX_DIMENSION; j++)
+                {
+                    Domains[i, j] = new DomainInfo();
                 }
             }
         }
@@ -66,7 +85,10 @@ namespace fractal_coding
 
         public void ProcessImage()
         {
+            //InitRanges();
+            //InitDomains();
             PopulateRanges();
+            PopulateDomains();
         }
 
         private void PopulateRanges()
@@ -77,9 +99,9 @@ namespace fractal_coding
 
         private void MapPixelsToRanges()
         {
-            for(int i = 0; i < HEIGHT; i++)
+            for (int i = 0; i < HEIGHT; i++)
             {
-                for(int j = 0; j < WIDTH; j++)
+                for (int j = 0; j < WIDTH; j++)
                 {
                     int rangeI = i / 8;
                     int rangeJ = j / 8;
@@ -94,30 +116,119 @@ namespace fractal_coding
 
         private void CalculateSumsForRanges()
         {
-            for(int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
+            for (int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
             {
-                for(int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
+                for (int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
                 {
                     Ranges[i, j].CalculateSumOfPixels();
-                    Ranges[i, j].CalculateSumSquaredOfPixels();
+                    Ranges[i, j].CalculateSumOfSquaredPixels();
                 }
             }
         }
 
         public void SaveCoding()
         {
-            if(OriginalImagePath == null)
+            if (OriginalImagePath == null)
             {
                 return;
             }
         }
 
+        private void PopulateDomains()
+        {
+            MapPixelsToDomains();
+            CalculateSumsForDomains();
+            GenerateIsometries();
+        }
+
+        private void GenerateIsometries()
+        {
+            for (int i = 0; i < DOMAIN_MATRIX_DIMENSION; i++)
+            {
+                for (int j = 0; j < DOMAIN_MATRIX_DIMENSION; j++)
+                {
+                    Domains[i, j].PopulateIsometries();
+                }
+            }
+        }
+
+        private void CalculateSumsForDomains()
+        {
+            for (int i = 0; i < DOMAIN_MATRIX_DIMENSION; i++)
+            {
+                for (int j = 0; j < DOMAIN_MATRIX_DIMENSION; j++)
+                {
+                    Domains[i, j].CalculateSumOfPixels();
+                    Domains[i, j].CalculateSumOfSquaredPixels();
+                }
+            }
+        }
+
+        private void MapPixelsToDomains()
+        {
+            int x = 0;
+            int y = 0;
+            for (int i = 0; i < HEIGHT - 8; i += 8)
+            {
+                for (int j = 0; j < WIDTH - 8; j += 8)
+                {
+                    byte[,] largeDomain = CopyPixels(i, j);
+                    byte[,] sampledDomain = SubSampleDomain(largeDomain);
+                    Domains[x, y].AddIdentityIsometry(sampledDomain);
+                    y++;
+                }
+                y = 0;
+                x++;
+            }
+        }
+
+        private byte[,] SubSampleDomain(byte[,] largeDomain)
+        {
+            byte[,] result = new byte[8, 8];
+            int x = 0;
+            int y = 0;
+            for (int i = 0; i < 16; i += 2)
+            {
+                for (int j = 0; j < 16; j += 2)
+                {
+                    int pixel1 = largeDomain[i, j];
+                    int pixel2 = largeDomain[i, j + 1];
+                    int pixel3 = largeDomain[i + 1, j];
+                    int pixel4 = largeDomain[i + 1, j + 1];
+                    double average = (pixel1 + pixel2 + pixel3 + pixel4) / 4.0;
+                    result[x, y] = (byte)average;
+                    y++;
+                }
+                y = 0;
+                x++;
+            }
+            return result;
+        }
+
+        private byte[,] CopyPixels(int i, int j)
+        {
+            byte[,] largeDomain = new byte[16, 16];
+            int a = 0;
+            int b = 0;
+            for (int x = i; x < i + 16; x++)
+            {
+                for (int y = j; y < j + 16; y++)
+                {
+                    largeDomain[a, b] = Image[x, y];
+                    b++;
+                }
+                b = 0;
+                a++;
+            }
+            return largeDomain;
+        }
+
         public byte[,] ApplyIsometry(int isometry)
         {
             byte[,] result = new byte[HEIGHT, WIDTH];
-            for(int i = 0; i < HEIGHT; i++)
+            for (int i = 0; i < HEIGHT; i++)
             {
-                for(int j = 0; j < WIDTH; j++)
+                for (int j = 0; j < WIDTH; j++)
                 {
                     switch (isometry)
                     {

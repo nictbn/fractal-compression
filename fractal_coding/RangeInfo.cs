@@ -8,32 +8,35 @@ namespace fractal_coding
 {
     public class RangeInfo
     {
+        const int WIDTH = 8;
+        const int HEIGHT = 8;
+
         public byte[,] Pixels;
         public int SumOfPixels;
         public int SumOfSquaredPixels;
         public RangeInfo()
         {
-            Pixels = new byte[8, 8];
+            Pixels = new byte[HEIGHT, WIDTH];
             SumOfPixels = 0;
             SumOfSquaredPixels = 0;
         }
 
         public void CalculateSumOfPixels()
         {
-            for(int i = 0; i < 8; i++)
+            for (int i = 0; i < HEIGHT; i++)
             {
-                for(int j = 0; j < 8; j++)
+                for (int j = 0; j < WIDTH; j++)
                 {
                     SumOfPixels += Pixels[i, j];
                 }
             }
         }
 
-        public void CalculateSumSquaredOfPixels()
+        public void CalculateSumOfSquaredPixels()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < HEIGHT; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < WIDTH; j++)
                 {
                     SumOfSquaredPixels += Pixels[i, j] * Pixels[i, j];
                 }

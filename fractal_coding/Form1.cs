@@ -56,9 +56,9 @@ namespace fractal_coding
             int isometry = Convert.ToInt32(NumberOfStepsNumericUpDown.Value);
             byte[,] result = Coder.ApplyIsometry(isometry);
             Bitmap bmp = new Bitmap(512, 512);
-            for(int i = 0; i < 512; i++)
+            for (int i = 0; i < 512; i++)
             {
-                for(int j = 0; j < 512; j++)
+                for (int j = 0; j < 512; j++)
                 {
                     int color = result[i, j];
                     bmp.SetPixel(j, i, Color.FromArgb(color, color, color));
