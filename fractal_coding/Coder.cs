@@ -85,8 +85,8 @@ namespace fractal_coding
 
         public void ProcessImage()
         {
-            //InitRanges();
-            //InitDomains();
+            InitRanges();
+            InitDomains();
             PopulateRanges();
             PopulateDomains();
         }
