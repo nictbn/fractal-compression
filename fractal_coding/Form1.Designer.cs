@@ -57,6 +57,8 @@
             this.PSNRLabel = new System.Windows.Forms.Label();
             this.PSNRTextBox = new System.Windows.Forms.TextBox();
             this.ProcessBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.OriginalImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DecodedImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RangePictureBox)).BeginInit();
@@ -72,6 +74,7 @@
             this.OriginalImagePictureBox.Size = new System.Drawing.Size(512, 512);
             this.OriginalImagePictureBox.TabIndex = 0;
             this.OriginalImagePictureBox.TabStop = false;
+            this.OriginalImagePictureBox.Click += new System.EventHandler(this.OriginalImagePictureBox_Click);
             // 
             // DecodedImagePictureBox
             // 
@@ -340,11 +343,31 @@
             this.ProcessBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.ProcessBackgroundWorker_ProgressChanged);
             this.ProcessBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.ProcessBackgroundWorker_RunWorkerCompleted);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(111, 595);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 29;
+            this.label1.Text = "label1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(111, 624);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 30;
+            this.label2.Text = "label2";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1102, 776);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.PSNRLabel);
             this.Controls.Add(this.PSNRTextBox);
             this.Controls.Add(this.NumberOfStepsNumericUpDown);
@@ -416,6 +439,8 @@
         private System.Windows.Forms.Label PSNRLabel;
         private System.Windows.Forms.TextBox PSNRTextBox;
         private System.ComponentModel.BackgroundWorker ProcessBackgroundWorker;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

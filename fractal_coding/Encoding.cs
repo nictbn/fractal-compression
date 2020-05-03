@@ -13,5 +13,13 @@ namespace fractal_coding
         public int Isometry;
         public int SQuantized;
         public int OQuantized;
+        public Encoding()
+        {
+            Xd = 32;
+            Yd = 0;
+            Isometry = 0;
+            SQuantized = 0;
+            OQuantized = 0;
+        }
     }
 }

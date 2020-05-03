@@ -15,6 +15,7 @@ namespace fractal_coding
     {
         public string OriginalImagePath;
         public Coder Coder;
+        public Bitmap CleanImage = new Bitmap(512, 512);
         public Form1()
         {
             InitializeComponent();
@@ -37,6 +38,7 @@ namespace fractal_coding
                     using (var bmpTemp = new Bitmap(OriginalImagePath))
                     {
                         OriginalImagePictureBox.Image = new Bitmap(bmpTemp);
+                        CleanImage = new Bitmap(bmpTemp);
                     }
                 }
             }
@@ -82,6 +84,104 @@ namespace fractal_coding
         private void ProcessBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             ProcessProgressBar.Value = (int)e.Result;
+        }
+
+        private void OriginalImagePictureBox_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs)e;
+            Point coordinates = me.Location;
+            label1.Text = coordinates.X.ToString();
+            label2.Text = coordinates.Y.ToString();
+            int x = coordinates.X;
+            int y = coordinates.Y;
+            if (y < 0)
+            {
+                y = 0;
+            }
+            if (y > 511)
+            {
+                y = 511;
+            }
+            if (x < 0)
+            {
+                x = 0;
+            }
+            if (x > 511)
+            {
+                x = 511;
+            }
+            x = x / 8;
+            y = y / 8;
+            Encoding encoding = Coder.Encodings[y, x];
+            XdTextBox.Text = encoding.Xd.ToString();
+            YdTextBox.Text = encoding.Yd.ToString();
+            int xd = encoding.Xd * 8;
+            int yd = encoding.Yd * 8;
+            IsometryTextBox.Text = encoding.Isometry.ToString();
+            QuantizedSTextBox.Text = encoding.SQuantized.ToString();
+            QuantizedOTextBox.Text = encoding.OQuantized.ToString();
+            Bitmap imageWithBlocks = new Bitmap(CleanImage);
+            using (Graphics g = Graphics.FromImage(imageWithBlocks))
+            {
+                Pen whitePen = new Pen(Color.White, 1);
+                Rectangle smallRectangle = new Rectangle(x * 8, y * 8, 8, 8);
+                Rectangle bigRectangle = new Rectangle(yd, xd, 16, 16);
+                g.DrawRectangle(whitePen, smallRectangle);
+                g.DrawRectangle(whitePen, bigRectangle);
+            }
+            OriginalImagePictureBox.Image = imageWithBlocks;
+
+            Bitmap range = GenerateBitmap(y * 8, x * 8, 8);
+            Bitmap domain = GenerateBitmap(xd, yd, 16);
+            RangePictureBox.Image = range;
+            DomainPictureBox.Image = domain;
+        }
+
+        private Bitmap GenerateBitmap(int line, int column, int scanDimension)
+        {
+            byte[,] result = new byte[scanDimension * 10, scanDimension * 10];
+            byte[,] image = Coder.Image;
+            byte[,] minimizedImage = new byte[scanDimension, scanDimension];
+            int a = 0;
+            int b = 0;
+            for (int i = line; i < line + scanDimension; i++)
+            {
+                for (int j = column; j < column + scanDimension; j++)
+                {
+                    minimizedImage[a, b] = image[i, j];
+                    b++;
+                }
+                b = 0;
+                a++;
+            }
+
+            for (int i = 0; i < scanDimension; i++)
+            {
+                for (int j = 0; j < scanDimension; j++)
+                {
+                    byte pixel = minimizedImage[i, j];
+                    for (int k = 0; k < 10; k++)
+                    {
+                        for (int l = 0; l < 10; l++)
+                        {
+                            int positionI = i * 10 + k;
+                            int positionJ = j * 10 + l;
+                            result[positionI, positionJ] = pixel;
+                        }
+                    }
+                }
+            }
+
+            Bitmap resultBitmap = new Bitmap(scanDimension * 10, scanDimension * 10);
+            for (int i = 0; i < scanDimension * 10; i++)
+            {
+                for (int j = 0; j < scanDimension * 10; j++)
+                {
+                    byte color = result[i, j];
+                    resultBitmap.SetPixel(j, i, Color.FromArgb(color, color, color));
+                }
+            }
+            return resultBitmap;
         }
     }
 }

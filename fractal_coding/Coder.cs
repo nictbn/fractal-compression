@@ -27,11 +27,11 @@ namespace fractal_coding
         const int DOMAIN_MATRIX_DIMENSION = 63;
 
         private byte[] Header;
-        private byte[,] Image;
+        public byte[,] Image;
         private string OriginalImagePath;
         private RangeInfo[,] Ranges;
         private DomainInfo[,] Domains;
-        private Encoding[,] Encodings;
+        public Encoding[,] Encodings;
 
         public void Init()
         {
