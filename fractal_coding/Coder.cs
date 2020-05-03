@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitReaderWriter;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -255,6 +256,22 @@ namespace fractal_coding
             {
                 return;
             }
+            string savedEncodingPath = OriginalImagePath + ".f";
+            BitWriter writer = new BitWriter(savedEncodingPath);
+            for (int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
+            {
+                for (int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
+                {
+                    Encoding encoding = Encodings[i, j];
+                    writer.writeNBits(encoding.Xd, 6);
+                    writer.writeNBits(encoding.Yd, 6);
+                    writer.writeNBits(encoding.Isometry, 3);
+                    writer.writeNBits(encoding.SQuantized, 5);
+                    writer.writeNBits(encoding.OQuantized, 7);
+                }
+            }
+            writer.writeNBits(0, 7);
+            writer.closeFile();
         }
 
         private void PopulateDomains()
