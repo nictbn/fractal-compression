@@ -50,6 +50,7 @@
     <Compile Include="BitWriter.cs" />
     <Compile Include="Coder.cs" />
     <Compile Include="DomainInfo.cs" />
+    <Compile Include="Encoding.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

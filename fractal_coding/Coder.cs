@@ -30,6 +30,7 @@ namespace fractal_coding
         private string OriginalImagePath;
         private RangeInfo[,] Ranges;
         private DomainInfo[,] Domains;
+        private Encoding[,] Encodings;
 
         public void Init()
         {
@@ -39,7 +40,21 @@ namespace fractal_coding
 
             InitRanges();
             InitDomains();
+            InitEncodings();
         }
+
+        private void InitEncodings()
+        {
+            Encodings = new Encoding[RANGE_MATRIX_DIMENSION, RANGE_MATRIX_DIMENSION];
+            for (int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
+            {
+                for (int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
+                {
+                    Encodings[i, j] = new Encoding();
+                }
+            }
+        }
+
         public void InitRanges()
         {
             Ranges = new RangeInfo[RANGE_MATRIX_DIMENSION, RANGE_MATRIX_DIMENSION];
@@ -87,8 +102,111 @@ namespace fractal_coding
         {
             InitRanges();
             InitDomains();
+            InitEncodings();
             PopulateRanges();
             PopulateDomains();
+            FindEncodings();
+        }
+
+        private void FindEncodings()
+        {
+            const int s_bits = 5;
+            const int o_bits = 7;
+            const int grey_levels = 255;
+            const int sum1 = 64;
+            const double max_scale = 1.0;
+            for(int i = 0; i < RANGE_MATRIX_DIMENSION; i++)
+            {
+                for(int j = 0; j < RANGE_MATRIX_DIMENSION; j++)
+                {
+                    RangeInfo currentRange = Ranges[i, j];
+                    int rsum = currentRange.SumOfPixels;
+                    int rsum2 = currentRange.SumOfSquaredPixels;
+                    Encoding currentEncoding = new Encoding();
+                    double last_sqerr = double.MaxValue;
+                    for(int m = 0; m < DOMAIN_MATRIX_DIMENSION; m++)
+                    {
+                        for (int n = 0; n < DOMAIN_MATRIX_DIMENSION; n++)
+                        {
+                            DomainInfo currentDomain = Domains[m, n];
+                            int dsum = currentDomain.SumOfPixels;
+                            int dsum2 = currentDomain.SumOfSquaredPixels;
+                            for(int p = 0; p < 8; p++)
+                            {
+                                byte[,] currentDomainPixels = currentDomain.Isometries[p];
+                                int rdsum = CalculateCompositeSum(currentRange.Pixels, currentDomainPixels);
+                                int det = sum1 * dsum2 - dsum * dsum;
+                                double alpha;
+                                if (det == 0)
+                                {
+                                    alpha = 0;
+                                }
+                                else
+                                {
+                                    alpha = (1.0 * sum1 * rdsum - rsum * dsum) / det;
+                                }
+                          
+
+                                int pialpha = (int)(0.5 + (alpha + max_scale) / (2.0 * max_scale) * (1 << s_bits));
+                                if(pialpha < 0)
+                                {
+                                    pialpha = 0;
+                                }
+                                if(pialpha >= (1 << s_bits))
+                                {
+                                    pialpha = (1 << s_bits) - 1;
+                                }
+                                alpha = (double)pialpha / (double)(1 << s_bits) * (2.0 * max_scale) - max_scale;
+
+                                double beta = (1.0 * rsum - alpha * dsum) / sum1;
+
+                                if (alpha > 0)
+                                {
+                                    beta += alpha * grey_levels;
+                                }
+                                int pibeta = (int)(0.5 + beta / ((1.0 + Math.Abs(alpha)) * grey_levels) * ((1 << o_bits) - 1));
+                                if(pibeta < 0)
+                                {
+                                    pibeta = 0;
+                                }
+                                if (pibeta >= (1 << o_bits))
+                                {
+                                    pibeta = (1 << o_bits) - 1;
+                                }
+                                beta = (double)pibeta / (double)((1 << o_bits) - 1) * ((1.0 + Math.Abs(alpha)) * grey_levels);
+                                if (alpha > 0)
+                                {
+                                    beta -= alpha * grey_levels;
+                                }
+                                double sqerr = (rsum2 + alpha * (alpha * dsum2 - 2.0 * rdsum + 2.0 * beta * dsum) + beta * (beta * sum1 - 2.0 * rsum));
+                                if (sqerr < last_sqerr)
+                                {
+                                    last_sqerr = sqerr;
+                                    currentEncoding.Xd = m;
+                                    currentEncoding.Yd = n;
+                                    currentEncoding.Isometry = p;
+                                    currentEncoding.SQuantized = pialpha;
+                                    currentEncoding.OQuantized = pibeta;
+                                }
+                            }
+                        }
+                    }
+                    Encodings[i, j] = currentEncoding;
+                }
+            }
+        }
+
+        private int CalculateCompositeSum(byte[,] currentRange, byte[,] currentDomain)
+        {
+            int result = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    result += currentRange[i, j] * currentDomain[i, j];
+                }
+            }
+            return result;
         }
 
         private void PopulateRanges()
