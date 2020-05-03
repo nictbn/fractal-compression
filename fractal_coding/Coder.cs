@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -98,18 +99,20 @@ namespace fractal_coding
             }
         }
 
-        public void ProcessImage()
+        public void ProcessImage(BackgroundWorker bw)
         {
             InitRanges();
             InitDomains();
             InitEncodings();
             PopulateRanges();
             PopulateDomains();
-            FindEncodings();
+            FindEncodings(bw);
         }
 
-        private void FindEncodings()
+        private void FindEncodings(BackgroundWorker bw)
         {
+            int progress = 0;
+
             const int s_bits = 5;
             const int o_bits = 7;
             const int grey_levels = 255;
@@ -192,6 +195,8 @@ namespace fractal_coding
                         }
                     }
                     Encodings[i, j] = currentEncoding;
+                    progress++;
+                    bw.ReportProgress(progress);
                 }
             }
         }

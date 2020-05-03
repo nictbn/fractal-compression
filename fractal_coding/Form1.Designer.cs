@@ -56,6 +56,7 @@
             this.NumberOfStepsNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.PSNRLabel = new System.Windows.Forms.Label();
             this.PSNRTextBox = new System.Windows.Forms.TextBox();
+            this.ProcessBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.OriginalImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DecodedImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RangePictureBox)).BeginInit();
@@ -84,6 +85,7 @@
             // ProcessProgressBar
             // 
             this.ProcessProgressBar.Location = new System.Drawing.Point(12, 557);
+            this.ProcessProgressBar.Maximum = 4096;
             this.ProcessProgressBar.Name = "ProcessProgressBar";
             this.ProcessProgressBar.Size = new System.Drawing.Size(1073, 23);
             this.ProcessProgressBar.TabIndex = 2;
@@ -331,6 +333,13 @@
             this.PSNRTextBox.TabIndex = 27;
             this.PSNRTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // ProcessBackgroundWorker
+            // 
+            this.ProcessBackgroundWorker.WorkerReportsProgress = true;
+            this.ProcessBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.ProcessBackgroundWorker_DoWork);
+            this.ProcessBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.ProcessBackgroundWorker_ProgressChanged);
+            this.ProcessBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.ProcessBackgroundWorker_RunWorkerCompleted);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -406,6 +415,7 @@
         private System.Windows.Forms.NumericUpDown NumberOfStepsNumericUpDown;
         private System.Windows.Forms.Label PSNRLabel;
         private System.Windows.Forms.TextBox PSNRTextBox;
+        private System.ComponentModel.BackgroundWorker ProcessBackgroundWorker;
     }
 }
 

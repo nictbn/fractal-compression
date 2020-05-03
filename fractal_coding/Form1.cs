@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -43,7 +44,7 @@ namespace fractal_coding
 
         private void ProcessButton_Click(object sender, EventArgs e)
         {
-            Coder.ProcessImage();
+            ProcessBackgroundWorker.RunWorkerAsync();
         }
 
         private void CoderSaveButton_Click(object sender, EventArgs e)
@@ -65,6 +66,22 @@ namespace fractal_coding
                 }
             }
             DecodedImagePictureBox.Image = bmp;
+        }
+
+        private void ProcessBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Coder.ProcessImage(ProcessBackgroundWorker);
+            e.Result = 0;
+        }
+
+        private void ProcessBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            ProcessProgressBar.Value = e.ProgressPercentage;
+        }
+
+        private void ProcessBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            ProcessProgressBar.Value = (int)e.Result;
         }
     }
 }
