@@ -14,13 +14,18 @@ namespace fractal_coding
     public partial class Form1 : Form
     {
         public string OriginalImagePath;
+        public string InitialImagePath;
+        public string EncodedImagePath;
         public Coder Coder;
+        public Decoder Decoder;
         public Bitmap CleanImage = new Bitmap(512, 512);
         public Form1()
         {
             InitializeComponent();
             Coder = new Coder();
+            Decoder = new Decoder();
             Coder.Init();
+            Decoder.Init();
         }
 
         private void CoderLoadButton_Click(object sender, EventArgs e)
@@ -56,18 +61,7 @@ namespace fractal_coding
 
         private void DecodeButton_Click(object sender, EventArgs e)
         {
-            int isometry = Convert.ToInt32(NumberOfStepsNumericUpDown.Value);
-            byte[,] result = Coder.ApplyIsometry(isometry);
-            Bitmap bmp = new Bitmap(512, 512);
-            for (int i = 0; i < 512; i++)
-            {
-                for (int j = 0; j < 512; j++)
-                {
-                    int color = result[i, j];
-                    bmp.SetPixel(j, i, Color.FromArgb(color, color, color));
-                }
-            }
-            DecodedImagePictureBox.Image = bmp;
+            int numberOfSteps = Convert.ToInt32(NumberOfStepsNumericUpDown.Value);
         }
 
         private void ProcessBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -182,6 +176,42 @@ namespace fractal_coding
                 }
             }
             return resultBitmap;
+        }
+
+        private void LoadInitialImageButton_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\School";
+                openFileDialog.Filter = "BMP FIles (*.bmp)|*.BMP";
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    InitialImagePath = openFileDialog.FileName;
+                    Decoder.ParseImage(InitialImagePath);
+                    using (var bmpTemp = new Bitmap(InitialImagePath))
+                    {
+                        DecodedImagePictureBox.Image = new Bitmap(bmpTemp);
+                    }
+                }
+            }
+        }
+
+        private void DecoderLoadButton_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\School";
+                openFileDialog.Filter = "Fractal Files (*.f)|*.f";
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    EncodedImagePath = openFileDialog.FileName;
+                    Decoder.LoadEncodings(EncodedImagePath);
+                }
+            } 
         }
     }
 }

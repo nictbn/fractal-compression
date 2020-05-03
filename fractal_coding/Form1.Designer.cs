@@ -283,6 +283,7 @@
             this.DecoderLoadButton.TabIndex = 20;
             this.DecoderLoadButton.Text = "Load";
             this.DecoderLoadButton.UseVisualStyleBackColor = true;
+            this.DecoderLoadButton.Click += new System.EventHandler(this.DecoderLoadButton_Click);
             // 
             // LoadInitialImageButton
             // 
@@ -292,6 +293,7 @@
             this.LoadInitialImageButton.TabIndex = 23;
             this.LoadInitialImageButton.Text = "Load Initial";
             this.LoadInitialImageButton.UseVisualStyleBackColor = true;
+            this.LoadInitialImageButton.Click += new System.EventHandler(this.LoadInitialImageButton_Click);
             // 
             // NumberOfStepsLabel
             // 
@@ -307,7 +309,12 @@
             // 
             this.NumberOfStepsNumericUpDown.Location = new System.Drawing.Point(776, 653);
             this.NumberOfStepsNumericUpDown.Maximum = new decimal(new int[] {
-            7,
+            5,
+            0,
+            0,
+            0});
+            this.NumberOfStepsNumericUpDown.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
@@ -316,6 +323,11 @@
             this.NumberOfStepsNumericUpDown.Size = new System.Drawing.Size(103, 20);
             this.NumberOfStepsNumericUpDown.TabIndex = 26;
             this.NumberOfStepsNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.NumberOfStepsNumericUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // PSNRLabel
             // 
