@@ -264,6 +264,7 @@
             this.DecoderSaveButton.TabIndex = 22;
             this.DecoderSaveButton.Text = "Save";
             this.DecoderSaveButton.UseVisualStyleBackColor = true;
+            this.DecoderSaveButton.Click += new System.EventHandler(this.DecoderSaveButton_Click);
             // 
             // DecodeButton
             // 

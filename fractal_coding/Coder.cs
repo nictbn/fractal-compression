@@ -362,44 +362,5 @@ namespace fractal_coding
             }
             return largeDomain;
         }
-
-        public byte[,] ApplyIsometry(int isometry)
-        {
-            byte[,] result = new byte[HEIGHT, WIDTH];
-            for (int i = 0; i < HEIGHT; i++)
-            {
-                for (int j = 0; j < WIDTH; j++)
-                {
-                    switch (isometry)
-                    {
-                        case IDENTICAL_TRANSFORM:
-                            result[i, j] = Image[i, j];
-                            break;
-                        case VERTICAL_AXIS_MIRRORING:
-                            result[i, j] = Image[i, WIDTH - 1 - j];
-                            break;
-                        case HORIZONTAL_AXIS_MIRRORING:
-                            result[i, j] = Image[HEIGHT - 1 - i, j];
-                            break;
-                        case FIRST_DIAGONAL_MIRRORING:
-                            result[i, j] = Image[j, i];
-                            break;
-                        case SECOND_DIAGONAL_MIRRORING:
-                            result[i, j] = Image[HEIGHT - 1 - j, WIDTH - 1 - i];
-                            break;
-                        case CLOCKWISE_90_ROTATION:
-                            result[i, j] = Image[WIDTH - 1 - j, i];
-                            break;
-                        case CLOCKWISE_180_ROTATION:
-                            result[i, j] = Image[HEIGHT - 1 - i, WIDTH - 1 - j];
-                            break;
-                        case CLOCKWISE_270_ROTATION:
-                            result[i, j] = Image[j, WIDTH - 1 - i];
-                            break;
-                    }
-                }
-            }
-            return result;
-        }
     }
 }

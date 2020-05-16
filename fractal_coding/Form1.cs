@@ -62,6 +62,17 @@ namespace fractal_coding
         private void DecodeButton_Click(object sender, EventArgs e)
         {
             int numberOfSteps = Convert.ToInt32(NumberOfStepsNumericUpDown.Value);
+            Decoder.ApplyTransforms(numberOfSteps);
+            Bitmap resultingImage = new Bitmap(512, 512);
+            for (int i = 0; i < 512; i++)
+            {
+                for (int j = 0; j < 512; j++)
+                {
+                    int color = Decoder.InitialImage[i, j];
+                    resultingImage.SetPixel(j, i, Color.FromArgb(color, color, color));
+                }
+            }
+            DecodedImagePictureBox.Image = resultingImage;
         }
 
         private void ProcessBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -212,6 +223,11 @@ namespace fractal_coding
                     Decoder.LoadEncodings(EncodedImagePath);
                 }
             } 
+        }
+
+        private void DecoderSaveButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
