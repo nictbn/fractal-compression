@@ -84,6 +84,7 @@
             this.DecodedImagePictureBox.Size = new System.Drawing.Size(512, 512);
             this.DecodedImagePictureBox.TabIndex = 1;
             this.DecodedImagePictureBox.TabStop = false;
+            this.DecodedImagePictureBox.Click += new System.EventHandler(this.DecodedImagePictureBox_Click);
             // 
             // ProcessProgressBar
             // 

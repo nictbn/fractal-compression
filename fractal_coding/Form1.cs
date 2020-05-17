@@ -275,6 +275,11 @@ namespace fractal_coding
 
         private void DecoderSaveButton_Click(object sender, EventArgs e)
         {
+            Decoder.SaveDecodedImage();
+        }
+
+        private void DecodedImagePictureBox_Click(object sender, EventArgs e)
+        {
 
         }
     }

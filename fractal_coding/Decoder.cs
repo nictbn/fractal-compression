@@ -232,5 +232,22 @@ namespace fractal_coding
                 }
             }
         }
+
+        public void SaveDecodedImage()
+        {
+            string savedImagePath = EncodedImagePath + ".bmp";
+            using (BinaryWriter writer = new BinaryWriter(File.Open(savedImagePath, FileMode.Create)))
+            {
+                writer.Write(Header);
+                for (int i = HEIGHT - 1; i >= 0; i--)
+                {
+                    for (int j = 0; j < WIDTH; j++)
+                    {
+                        writer.Write(InitialImage[i, j]);
+                    }
+                }
+            }
+            
+        }
     }
 }
