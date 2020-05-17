@@ -184,16 +184,15 @@ namespace fractal_coding
             }
             OriginalImagePictureBox.Image = imageWithBlocks;
 
-            Bitmap range = GenerateBitmap(y * 8, x * 8, 8);
-            Bitmap domain = GenerateBitmap(xd, yd, 16);
+            Bitmap range = GenerateBitmap(y * 8, x * 8, 8, Coder.Image);
+            Bitmap domain = GenerateBitmap(xd, yd, 16, Coder.Image);
             RangePictureBox.Image = range;
             DomainPictureBox.Image = domain;
         }
 
-        private Bitmap GenerateBitmap(int line, int column, int scanDimension)
+        private Bitmap GenerateBitmap(int line, int column, int scanDimension, byte[,] image)
         {
             byte[,] result = new byte[scanDimension * 10, scanDimension * 10];
-            byte[,] image = Coder.Image;
             byte[,] minimizedImage = new byte[scanDimension, scanDimension];
             int a = 0;
             int b = 0;
@@ -280,7 +279,60 @@ namespace fractal_coding
 
         private void DecodedImagePictureBox_Click(object sender, EventArgs e)
         {
-
+            MouseEventArgs me = (MouseEventArgs)e;
+            Point coordinates = me.Location;
+            int x = coordinates.X;
+            int y = coordinates.Y;
+            if (y < 0)
+            {
+                y = 0;
+            }
+            if (y > 511)
+            {
+                y = 511;
+            }
+            if (x < 0)
+            {
+                x = 0;
+            }
+            if (x > 511)
+            {
+                x = 511;
+            }
+            x = x / 8;
+            y = y / 8;
+            Encoding encoding = Decoder.Encodings[y, x];
+            XdTextBox.Text = encoding.Xd.ToString();
+            YdTextBox.Text = encoding.Yd.ToString();
+            int xd = encoding.Xd * 8;
+            int yd = encoding.Yd * 8;
+            IsometryTextBox.Text = encoding.Isometry.ToString();
+            QuantizedSTextBox.Text = encoding.SQuantized.ToString();
+            QuantizedOTextBox.Text = encoding.OQuantized.ToString();
+            Bitmap imageWithBlocks = new Bitmap(512, 512);
+            for (int i = 0; i < 512; i++)
+            {
+                for (int j = 0; j < 512; j++)
+                {
+                    int color = Decoder.InitialImage[i, j];
+                    imageWithBlocks.SetPixel(j, i, Color.FromArgb(color, color, color));
+                }
+            }
+            using (Graphics g = Graphics.FromImage(imageWithBlocks))
+            {
+                Pen whitePen = new Pen(Color.White, 1);
+                Rectangle smallRectangle = new Rectangle(x * 8, y * 8, 8, 8);
+                Rectangle bigRectangle = new Rectangle(yd, xd, 16, 16);
+                g.DrawRectangle(whitePen, smallRectangle);
+                g.DrawRectangle(whitePen, bigRectangle);
+            }
+            DecodedImagePictureBox.Image = imageWithBlocks;
+            
+            Bitmap range = GenerateBitmap(y * 8, x * 8, 8, Decoder.InitialImage);
+            Bitmap domain = GenerateBitmap(xd, yd, 16, Decoder.InitialImage);
+            RangePictureBox.Image = range;
+            DomainPictureBox.Image = domain;
+            
         }
     }
 }
