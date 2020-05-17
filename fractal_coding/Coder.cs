@@ -15,15 +15,6 @@ namespace fractal_coding
         const int HEIGHT = 512;
         const int WIDTH = 512;
 
-        const int IDENTICAL_TRANSFORM = 0;
-        const int VERTICAL_AXIS_MIRRORING = 1;
-        const int HORIZONTAL_AXIS_MIRRORING = 2;
-        const int FIRST_DIAGONAL_MIRRORING = 3;
-        const int SECOND_DIAGONAL_MIRRORING = 4;
-        const int CLOCKWISE_90_ROTATION = 5;
-        const int CLOCKWISE_180_ROTATION = 6;
-        const int CLOCKWISE_270_ROTATION = 7;
-
         const int RANGE_MATRIX_DIMENSION = 64;
         const int DOMAIN_MATRIX_DIMENSION = 63;
 

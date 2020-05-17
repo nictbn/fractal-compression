@@ -73,6 +73,54 @@ namespace fractal_coding
                 }
             }
             DecodedImagePictureBox.Image = resultingImage;
+            CalculatePSNR();
+        }
+
+        private void CalculatePSNR()
+        {
+            double maxError = GetCoderImageMaxIntensity();
+            double nominator = maxError * maxError * 512D * 512D;
+            double denominator = GetSumOfSquaredDifferences();
+            double fraction = 1;
+            if (denominator != 0)
+            {
+                fraction = nominator / denominator;
+            }
+            double PSNR = 10 * Math.Log10(fraction);
+            PSNRTextBox.Text = PSNR.ToString();
+        }
+
+        private double GetSumOfSquaredDifferences()
+        {
+            double result = 0.0;
+            for (int i = 0; i < 512; i++)
+            {
+                for (int j = 0; j < 512; j++)
+                {
+                    double original = Coder.Image[i, j];
+                    double decoded = Decoder.InitialImage[i, j];
+                    double squaredDifference = (original - decoded) * (original - decoded);
+                    result += squaredDifference;
+                }
+            }
+            return result;
+        }
+
+        private double GetCoderImageMaxIntensity()
+        {
+            double maxIntensity = 0.0;
+            for (int i = 0; i < 512; i++)
+            {
+                for (int j = 0; j < 512; j++)
+                {
+                    double currentIntensity = Coder.Image[i, j];
+                    if ( maxIntensity < currentIntensity)
+                    {
+                        maxIntensity = currentIntensity;
+                    }
+                }
+            }
+            return maxIntensity;
         }
 
         private void ProcessBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
