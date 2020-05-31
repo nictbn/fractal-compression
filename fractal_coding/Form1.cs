@@ -61,6 +61,10 @@ namespace fractal_coding
 
         private void DecodeButton_Click(object sender, EventArgs e)
         {
+            if (EncodedImagePath == null)
+            {
+                return;
+            }
             int numberOfSteps = Convert.ToInt32(NumberOfStepsNumericUpDown.Value);
             Decoder.ApplyTransforms(numberOfSteps);
             Bitmap resultingImage = new Bitmap(512, 512);
