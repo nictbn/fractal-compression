@@ -147,8 +147,6 @@ namespace fractal_coding
         {
             MouseEventArgs me = (MouseEventArgs)e;
             Point coordinates = me.Location;
-            label1.Text = coordinates.X.ToString();
-            label2.Text = coordinates.Y.ToString();
             int x = coordinates.X;
             int y = coordinates.Y;
             if (y < 0)
